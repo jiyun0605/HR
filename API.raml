@@ -8,29 +8,7 @@ mediaType:
   - application/json
 types:
   # Object used for request/response
-  product:
-    type: object
-    properties:
-      productId:
-        type: integer
-        required: false
-      name:
-        type: string
-        required: true
-      description:
-        type: string
-        required: false
-      price:
-        type: number
-        required: true
-  # Object used for error
-  error:
-    type: object
-    properties:
-      message:
-        type: string
-        required: true
-content:
+  content:
     type: object
     properties:
       id:
@@ -40,8 +18,14 @@ content:
         type: string
         required: False
       routine:
+        type: string
+        required: True
+      sets:
         type: string  
-        required: false
+        required: True
+      count:
+        type: string  
+        required: True
       created_at:
         type: datetime
         required: Auto
@@ -71,7 +55,9 @@ content:
             -
               id : 1
               title: : test title 1
-              routine : 
+              routine : 스쿼트,윗몸일으키기
+              sets: 2,3
+              count: 10,5
               created_at : 2020-07-12 17:59:50
               updated_at : 2020-07-12 18:00:15
   /{contentId}:
@@ -90,7 +76,9 @@ content:
             example:
               id : 1
               title: : test title 1
-              routine : 
+              routine : 스쿼트,윗몸일으키기
+              sets: 2,3
+              count: 10,5
               created_at : 2020-07-12 17:59:50
               updated_at : 2020-07-12 18:00:15
         404:
