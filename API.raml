@@ -1,5 +1,5 @@
 #%RAML 1.0
-title: Product API
+title: HelthRoutine API
 version: v1
 baseUri: http://127.0.0.1:8000/
 protocols:
@@ -12,7 +12,7 @@ types:
     type: object
     properties:
       id:
-        type: int
+        type: integer
         required: Auto
       title:
         type: string
@@ -55,9 +55,9 @@ types:
             -
               id : 1
               title: : test title 1
-              routine : 스쿼트,윗몸일으키기
-              sets: 2,3
-              count: 10,5
+              routine : 스쿼트, 윗몸일으키기
+              sets: 2, 3
+              count: 10, 5
               created_at : 2020-07-12 17:59:50
               updated_at : 2020-07-12 18:00:15
   /{contentId}:
@@ -114,14 +114,14 @@ types:
             message: Not Found
     post:
       body:
-        type: product
+        type: contents[]
       responses:
         # Sample response
         201:
           body:
             type: contents[]
             example:
-              id : 1
+                id : 1
                 title: : test title 1
                 routine : ""
                 created_at : '2020-07-12 17:59:50'
@@ -139,7 +139,20 @@ login:
 
 user:
   /user:
+    displayName: user
+    description: |
     get:
+      description: |
+      responses:
+        200:
+          body:
+            type: user[]
+            example:
+              id : 1
+              email : 1234@1234.com
+              password : 123456789
+              is_actived : True
+
     patch:
     /content:
       get:
