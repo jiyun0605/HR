@@ -30,95 +30,6 @@ types:
       message:
         type: string
         required: true
-/products:
-  displayName: Products
-  description: |
-  get:
-    description: |
-    responses:
-      200:
-        body:
-          type: product[]
-          # Sample response
-          example:
-            -
-              productId: 1
-              name: Product A
-              description: This is Product A
-              price: 12.34
-            -
-              productId: 2
-              name: Product B
-              description: This is Product B
-              price: 56.78
-  post:
-    body:
-      type: product
-    responses:
-      # Sample response
-      201:
-        body:
-          type: product
-          example:
-            productId: 3
-            name: Product A
-            description: This is Product A
-            price: 90.12
-  /{productId}:
-    displayName: Product
-    description: |
-    uriParameters:
-      productId:
-        type: integer
-    get:
-      description: |
-      responses:
-        200:
-          body:
-            type: product
-            # Sample response
-            example:
-              productId: 1
-              name: Product A
-              description: This is Product A
-              price: 12.34
-        404:
-          body:
-            type: error
-            # Sample response
-            example:
-              message: Product Not Found
-    patch:
-      description: |
-      responses:
-        200:
-          body:
-            type: product
-            # Sample response
-            example:
-              productId: 1
-              name: Product A
-              description: This is Product A
-              price: 12.34
-        404:
-          body:
-            type: error
-            # Sample response
-            example:
-              message: Product Not Found
-    delete:
-      description: |
-      responses:
-        204:
-          body:
-        404:
-          body:
-            type: error
-            # Sample response
-            example:
-              message: Product Not Found      
-
-
 content:
     type: object
     properties:
@@ -232,3 +143,34 @@ content:
             type: error
           example:
             message: Not Found
+
+login:
+  /login:
+    get:
+    post:
+
+user:
+  /user:
+    get:
+    patch:
+    /content:
+      get:
+
+signup:
+  /signup:
+    get:
+    post:
+
+email:
+  /email/{token}/verify/{user}:
+    get:
+
+search:
+  /search:
+    get:
+    /{keyword}:
+      get:
+
+home:
+  /home:
+    get:
