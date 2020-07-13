@@ -1,0 +1,234 @@
+#%RAML 1.0
+title: Product API
+version: v1
+baseUri: http://127.0.0.1:8000/
+protocols:
+  - HTTP
+mediaType:
+  - application/json
+types:
+  # Object used for request/response
+  product:
+    type: object
+    properties:
+      productId:
+        type: integer
+        required: false
+      name:
+        type: string
+        required: true
+      description:
+        type: string
+        required: false
+      price:
+        type: number
+        required: true
+  # Object used for error
+  error:
+    type: object
+    properties:
+      message:
+        type: string
+        required: true
+/products:
+  displayName: Products
+  description: |
+  get:
+    description: |
+    responses:
+      200:
+        body:
+          type: product[]
+          # Sample response
+          example:
+            -
+              productId: 1
+              name: Product A
+              description: This is Product A
+              price: 12.34
+            -
+              productId: 2
+              name: Product B
+              description: This is Product B
+              price: 56.78
+  post:
+    body:
+      type: product
+    responses:
+      # Sample response
+      201:
+        body:
+          type: product
+          example:
+            productId: 3
+            name: Product A
+            description: This is Product A
+            price: 90.12
+  /{productId}:
+    displayName: Product
+    description: |
+    uriParameters:
+      productId:
+        type: integer
+    get:
+      description: |
+      responses:
+        200:
+          body:
+            type: product
+            # Sample response
+            example:
+              productId: 1
+              name: Product A
+              description: This is Product A
+              price: 12.34
+        404:
+          body:
+            type: error
+            # Sample response
+            example:
+              message: Product Not Found
+    patch:
+      description: |
+      responses:
+        200:
+          body:
+            type: product
+            # Sample response
+            example:
+              productId: 1
+              name: Product A
+              description: This is Product A
+              price: 12.34
+        404:
+          body:
+            type: error
+            # Sample response
+            example:
+              message: Product Not Found
+    delete:
+      description: |
+      responses:
+        204:
+          body:
+        404:
+          body:
+            type: error
+            # Sample response
+            example:
+              message: Product Not Found      
+
+
+content:
+    type: object
+    properties:
+      id:
+        type: int
+        required: Auto
+      title:
+        type: string
+        required: False
+      routine:
+        type: string  
+        required: false
+      created_at:
+        type: datetime
+        required: Auto
+      updated_at:
+        type: datetime
+        required: Auto
+
+  # Object used for error
+  error:
+    type: object
+    properties:
+      message:
+        type: string
+        required: true
+/content:
+  displayName: Content
+  description: |
+  get:
+    description: |
+      # Get
+    responses:
+      200:
+        body:
+          type: contents[]
+          # Sample response
+          example:
+            -
+              id : 1
+              title: : test title 1
+              routine : 
+              created_at : 2020-07-12 17:59:50
+              updated_at : 2020-07-12 18:00:15
+  /{contentId}:
+    displayName: Content
+    description: |
+    uriParameters:
+      contentId:
+        type: integer
+    patch:
+      description: |
+      responses:
+        201:
+          body:
+            type: contents[]
+            # Sample response
+            example:
+              id : 1
+              title: : test title 1
+              routine : 
+              created_at : 2020-07-12 17:59:50
+              updated_at : 2020-07-12 18:00:15
+        404:
+          body:
+            type: error
+            # Sample response
+            example:
+              message: Not Found
+    delete:
+      description: |
+      responses:
+        204:
+          body:
+        404:
+          body:
+            type: error
+            # Sample response
+            example:
+              message: Not Found     
+  /create:
+    displayName: Content
+    description: |
+    get:
+      description: |
+      # Get
+      responses:
+        204:
+          body:
+        404:
+          body: 
+            type: error
+          example:
+            message: Not Found
+    post:
+      body:
+        type: product
+      responses:
+        # Sample response
+        201:
+          body:
+            type: contents[]
+            example:
+              id : 1
+                title: : test title 1
+                routine : ""
+                created_at : '2020-07-12 17:59:50'
+                updated_at : '2020-07-12 18:00:15'
+        404:
+          body: 
+            type: error
+          example:
+            message: Not Found
