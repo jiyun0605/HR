@@ -1,4 +1,4 @@
-<mxfile host="app.diagrams.net" modified="2020-07-22T14:05:25.957Z" agent="5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36" etag="NYvaYcVTMpiXeD18CCKN" version="13.5.0" type="github">
+<mxfile host="app.diagrams.net" modified="2020-07-22T14:13:21.501Z" agent="5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36" etag="vcM9CLhBauIbbMv8C-LB" version="13.5.0" type="github">
   <diagram id="6fkA1qd8soi0L3PjMzN8" name="Page-1">
     <mxGraphModel dx="1221" dy="688" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
@@ -7,11 +7,25 @@
         <mxCell id="N1DQkC1bA7dR1-oS_HL2-6" value="" style="group" vertex="1" connectable="0" parent="1">
           <mxGeometry x="60" y="40" width="260" height="250" as="geometry" />
         </mxCell>
-        <mxCell id="N1DQkC1bA7dR1-oS_HL2-3" value="&lt;b style=&quot;font-size: 17px&quot;&gt;id : autoField&lt;br&gt;password : charField(max=20)&lt;br&gt;email : emailField&lt;br&gt;is_active: booleanField&lt;br&gt;is_valid: booleanField&lt;br&gt;like : charField(max=100)&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="N1DQkC1bA7dR1-oS_HL2-6">
-          <mxGeometry y="7.575757575757575" width="260" height="242.4242424242424" as="geometry" />
+        <mxCell id="N1DQkC1bA7dR1-oS_HL2-3" value="&lt;span style=&quot;font-size: 15px&quot;&gt;id : autoField&lt;br&gt;password : charField(max=20)&lt;br&gt;email : emailField&lt;br&gt;is_active: booleanField&lt;br&gt;is_valid: booleanField&lt;br&gt;like : charField(max=100)&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="N1DQkC1bA7dR1-oS_HL2-6">
+          <mxGeometry y="7.58" width="210" height="242.42" as="geometry" />
         </mxCell>
         <mxCell id="N1DQkC1bA7dR1-oS_HL2-11" value="&lt;font style=&quot;font-size: 15px&quot;&gt;&lt;b&gt;User_Model&lt;/b&gt;&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
           <mxGeometry x="60" y="24.844242424242424" width="89.65517241379311" height="15.15151515151515" as="geometry" />
+        </mxCell>
+        <mxCell id="N1DQkC1bA7dR1-oS_HL2-16" value="" style="group" vertex="1" connectable="0" parent="1">
+          <mxGeometry x="430" y="55.16" width="260" height="250" as="geometry" />
+        </mxCell>
+        <mxCell id="N1DQkC1bA7dR1-oS_HL2-17" value="&lt;span style=&quot;font-size: 15px&quot;&gt;ID : foreignKeyField(User_model.id)&lt;br&gt;title : charField(max=10)&lt;br&gt;&lt;/span&gt;&lt;span style=&quot;font-size: 15px&quot;&gt;sports_name: charField(max=100)&lt;br&gt;&lt;/span&gt;&lt;span style=&quot;font-size: 15px&quot;&gt;rutein : integerfield&lt;/span&gt;&lt;br&gt;&lt;span style=&quot;font-size: 15px&quot;&gt;sets :&amp;nbsp;&lt;/span&gt;&lt;span style=&quot;font-size: 15px&quot;&gt;integerfield&lt;br&gt;created_date : dateTimeField&lt;br&gt;&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="N1DQkC1bA7dR1-oS_HL2-16">
+          <mxGeometry y="7.58" width="260" height="242.42" as="geometry" />
+        </mxCell>
+        <mxCell id="N1DQkC1bA7dR1-oS_HL2-18" value="&lt;span style=&quot;font-size: 15px&quot;&gt;&lt;b&gt;Post_Model&lt;/b&gt;&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="430" y="40.00424242424242" width="89.65517241379311" height="15.15151515151515" as="geometry" />
+        </mxCell>
+        <mxCell id="N1DQkC1bA7dR1-oS_HL2-19" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="N1DQkC1bA7dR1-oS_HL2-3">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="425" y="139" as="targetPoint" />
+          </mxGeometry>
         </mxCell>
       </root>
     </mxGraphModel>
