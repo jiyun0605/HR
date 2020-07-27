@@ -1,5 +1,5 @@
 #%RAML 1.0
-title: HelthRoutine API
+title: HelthRoutine
 version: v1
 baseUri: http://127.0.0.1:8000/
 protocols:
@@ -42,9 +42,9 @@ types:
         required: true
 /content:
   displayName: Content
-  description: |
+  description: Post_Model CRUD
   get:
-    description: |
+    description: get all Post_Model
       # Get
     responses:
       200:
@@ -54,20 +54,20 @@ types:
           example:
             -
               id : 1
-              title: : test title 1
-              routine : 스쿼트, 윗몸일으키기
-              sets: 2, 3
-              count: 10, 5
+              title : "test title 1"
+              routine : "2,3"
+              sets: "2,3"
+              count: "10,5"
               created_at : 2020-07-12 17:59:50
               updated_at : 2020-07-12 18:00:15
   /{contentId}:
     displayName: Content
-    description: |
+    description: get one Post_Model
     uriParameters:
       contentId:
         type: integer
     patch:
-      description: |
+      description: update {contentId} Post_Model
       responses:
         201:
           body:
@@ -75,10 +75,10 @@ types:
             # Sample response
             example:
               id : 1
-              title: : test title 1
-              routine : 스쿼트,윗몸일으키기
-              sets: 2,3
-              count: 10,5
+              title: : "test title 1"
+              routine : "2,3"
+              sets: "2,3"
+              count: "10,5"
               created_at : 2020-07-12 17:59:50
               updated_at : 2020-07-12 18:00:15
         404:
@@ -88,7 +88,7 @@ types:
             example:
               message: Not Found
     delete:
-      description: |
+      description: delete {contentId} Post_Model
       responses:
         204:
           body:
@@ -100,9 +100,9 @@ types:
               message: Not Found     
   /create:
     displayName: Content
-    description: |
+    description: create Post_Model
     get:
-      description: |
+      description: | get create form
       # Get
       responses:
         204:
@@ -113,19 +113,21 @@ types:
           example:
             message: Not Found
     post:
+      description : create Post_Model
+      
       body:
         type: contents[]
+        queryParameters:
+          example:
+            id : 1
+            title: : test title 1
+            routine : ""
+            created_at : '2020-07-12 17:59:50'
+            updated_at : '2020-07-12 18:00:15'
       responses:
         # Sample response
-        201:
+        201:  
           body:
-            type: contents[]
-            example:
-                id : 1
-                title: : test title 1
-                routine : ""
-                created_at : '2020-07-12 17:59:50'
-                updated_at : '2020-07-12 18:00:15'
         404:
           body: 
             type: error
