@@ -1,10 +1,10 @@
 from django.db import models
 
 class Post(models.Model):
-    title = models.CharField('제목', max_length=10)
+    title = models.CharField('제목', max_length=30)
     sports_name = models.CharField('운동 이름', max_length=100)
-    routine = models.IntegerField('루틴', default=0)
-    sets = models.IntegerField('세트', default=0)
+    routine = models.CharField('루틴', max_length=50)
+    sets = models.CharField('세트', max_length=50)
     created_date = models.DateTimeField('생성 날짜', auto_now_add=True)
     updated_date = models.DateTimeField('수정 날짜', auto_now_add=True)
 
