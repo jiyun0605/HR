@@ -71,17 +71,11 @@ def update_view(request, post_id):
     print(payload)  
     try:
         post = Post.objects.get(id=post_id)
-        print("test")
         post.title = payload['title']
-        print("test2")
         post.sports_name = payload['sports_name']
-        print("test3")
         post.routine = payload['routine']
-        print("test4")
         post.sets = payload['sets']
-        print("test5")
         post.updated_date = timezone.localtime()
-        print("test6")
         serializer = PostSerializer(post)
         return JsonResponse({'post': serializer.data}, safe=False,
             status=status.HTTP_200_OK)
