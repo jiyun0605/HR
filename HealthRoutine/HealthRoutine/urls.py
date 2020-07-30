@@ -21,6 +21,7 @@ from routine import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    # url(r'^routine/', include('routine.url')),
-    path('create/', views.create_view)
+    path('create/', views.create_view),
+    path('list/', views.list_view),
+    # path('delete/', views.delete_view),
 ]
