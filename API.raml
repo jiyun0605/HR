@@ -137,7 +137,27 @@ types:
 login:
   /login:
     get:
+      description: | check login user
+      # Get
+      responses:
+        204:
+          body:
+        404:
+          body: 
+            type: error
+          example:
+            message: already login
     post:
+     description: | check login user
+      # Post
+      responses:
+        204:
+          body:
+        404:
+          body: 
+            type: error
+          example:
+            message: already login
 
 user:
   /user:
