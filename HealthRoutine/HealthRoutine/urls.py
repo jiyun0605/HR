@@ -16,13 +16,17 @@ Including another URLconf
 from django.conf.urls import url
 from django.contrib import admin
 from django.urls import path, include
-from routine import views
+import routine
+import loginsystem
 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('create/', views.create_view),
-    path('list/', views.list_view),
-    path('<int:post_id>/delete/', views.delete_view),
-    path('<int:post_id>/update/', views.update_view),
+    path('create/', routine.views.create_view),
+    path('list/', routine.views.list_view),
+    path('<int:post_id>/delete/', routine.views.delete_view),
+    path('<int:post_id>/update/', routine.views.update_view),
+    path('signIn/', loginsystem.views.signIn_view),
+    path('signUp/',loginsystem.views.signUp_view),
+    path('logout/',loginsystem.views.logout_view),
 ]
