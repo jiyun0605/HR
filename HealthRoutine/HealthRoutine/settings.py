@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'routine.apps.RoutineConfig',
     'rest_framework',
+    'loginsystem',
 ]
 
 REST_FRAMEWORK = {
