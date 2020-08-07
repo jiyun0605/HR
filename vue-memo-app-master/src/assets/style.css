@@ -1,0 +1,11 @@
+.block{
+    padding: 2px;
+    margin: 5px 15px;
+    display: inline-block;
+    position: relative;
+    padding: 24px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 10px -4px rgba(0, 0, 0, 0.2);
+    background: #fff;
+}
+
