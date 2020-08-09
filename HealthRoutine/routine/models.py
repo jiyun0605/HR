@@ -1,6 +1,8 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 class Post(models.Model):
+    user_name = User.username
     title = models.CharField('제목', max_length=30)
     sports_name = models.CharField('운동 이름', max_length=100)
     routine = models.CharField('루틴', max_length=50)

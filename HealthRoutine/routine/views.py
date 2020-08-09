@@ -15,8 +15,10 @@ from .serializers import PostSerializer
 @csrf_exempt
 @permission_classes([permissions.AllowAny, ])
 def create_view(request):
+    if not request.user.username.is_authenticated:
+        return JsonResponse({'error': 'Failed authentication'}, safe=False, status=status.HTTP_401_UNAUTHORIZED)
+
     payload = json.loads(request.body)
-    user = request.user
     try:
         post = Post.objects.create(
             title=payload["title"],
@@ -40,7 +42,6 @@ def create_view(request):
 @csrf_exempt
 @permission_classes([permissions.AllowAny, ])
 def list_view(request):
-    user = request.user.id
     posts = Post.objects.all()
     serializer = PostSerializer(posts, many=True)
     return JsonResponse({'posts': serializer.data}, safe=False,
@@ -50,7 +51,9 @@ def list_view(request):
 @csrf_exempt
 @permission_classes([permissions.AllowAny, ])
 def delete_view(request, post_id):
-    user = request.user.id
+    if not request.user.username.is_authenticated:
+        return JsonResponse({'error': 'Failed authentication'}, safe=False, status=status.HTTP_401_UNAUTHORIZED)
+
     try:
         post = Post.objects.get(id=post_id)
         post.delete()
@@ -66,7 +69,9 @@ def delete_view(request, post_id):
 @csrf_exempt
 @permission_classes([permissions.AllowAny, ])
 def update_view(request, post_id):
-    user = request.user.id
+    if not request.user.username.is_authenticated:
+        return JsonResponse({'error': 'Failed authentication'}, safe=False, status=status.HTTP_401_UNAUTHORIZED)
+
     payload = json.loads(request.body)
     print(payload)  
     try:
