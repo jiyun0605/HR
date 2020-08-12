@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'routine.apps.RoutineConfig',
     'rest_framework',
     'loginsystem',
+    'user_edit',
 ]
 
 REST_FRAMEWORK = {

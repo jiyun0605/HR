@@ -43,15 +43,21 @@ def logout_view(request):
 @csrf_exempt
 @permission_classes([permissions.AllowAny, ])
 def signUp_view(request):
+    payload = json.loads(request.body)
     try:
         user = User.objects.create_user(
-            first_name=request.POST.get('name'),
-            username=request.POST.get('id'),
-            email=request.POST.get('email'),
-            password=request.POST.get('password'),
+            # first_name=request.POST.get('name'),
+            # username=request.POST.get('id'),
+            # email=request.POST.get('email'),
+            # password=request.POST.get('password'),
+            # is_active=False
+            first_name=payload['name'],
+            username=payload['id'],
+            email=payload['email'],
+            password=payload['password'],
             is_active=False
         )
-        pk=urlsafe_base64_encode(force_bytes(user.pk))
+        pk = urlsafe_base64_encode(force_bytes(user.pk))
         return JsonResponse({'pk': pk}, safe=False, status=status.HTTP_200_OK)
     except Exception:
         return JsonResponse({'error': 'Something terrible went wrong'}, safe=False,
