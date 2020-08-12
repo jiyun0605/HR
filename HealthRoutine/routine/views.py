@@ -15,8 +15,7 @@ from .serializers import PostSerializer
 @csrf_exempt
 @permission_classes([permissions.AllowAny, ])
 def create_view(request):
-    if not request.user.username.is_authenticated:
-        return JsonResponse({'error': 'Failed authentication'}, safe=False, status=status.HTTP_401_UNAUTHORIZED)
+    permission_func(request)
 
     payload = json.loads(request.body)
     try:
@@ -51,8 +50,7 @@ def list_view(request):
 @csrf_exempt
 @permission_classes([permissions.AllowAny, ])
 def delete_view(request, post_id):
-    if not request.user.username.is_authenticated:
-        return JsonResponse({'error': 'Failed authentication'}, safe=False, status=status.HTTP_401_UNAUTHORIZED)
+    permission_func(request)
 
     try:
         post = Post.objects.get(id=post_id)
@@ -69,8 +67,8 @@ def delete_view(request, post_id):
 @csrf_exempt
 @permission_classes([permissions.AllowAny, ])
 def update_view(request, post_id):
-    if not request.user.username.is_authenticated:
-        return JsonResponse({'error': 'Failed authentication'}, safe=False, status=status.HTTP_401_UNAUTHORIZED)
+
+    permission_func(request)
 
     payload = json.loads(request.body)
     print(payload)  
@@ -88,3 +86,8 @@ def update_view(request, post_id):
         return JsonResponse({'error': str(e)}, safe=False, status=status.HTTP_404_NOT_FOUND)
     except Exception:
         return JsonResponse({'error': 'Something terrible went wrong'}, safe=False, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+def permission_func(request):
+    if not request.user.username.is_authenticated:
+        return JsonResponse({'error': 'Failed authentication'}, safe=False, status=status.HTTP_401_UNAUTHORIZED)
