@@ -11,8 +11,8 @@ from .serializers import UserSerializer
 @api_view(["GET"])
 @csrf_exempt
 @permission_classes([permissions.AllowAny, ])
-def profile_view(request, user_id):
-    user_profile = User.objects.all(id=user_id)
+def profile_view(request):
+    user_profile = request.user.objects.get.all()
     serializer = UserSerializer(user_profile, many=True)
     return JsonResponse({'posts': serializer.data}, safe=False,
                         status=status.HTTP_200_OK)
