@@ -4,7 +4,7 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
-from rest_framework import permissions
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from django.utils import timezone
 
@@ -13,10 +13,8 @@ from .serializers import PostSerializer
 
 @api_view(["POST"])
 @csrf_exempt
-@permission_classes([permissions.AllowAny, ])
+@permission_classes([IsAuthenticated])
 def create_view(request):
-    permission_func(request)
-
     payload = json.loads(request.body)
     try:
         post = Post.objects.create(
@@ -39,7 +37,7 @@ def create_view(request):
 
 @api_view(["GET"])
 @csrf_exempt
-@permission_classes([permissions.AllowAny, ])
+@permission_classes([IsAuthenticated])
 def list_view(request):
     posts = Post.objects.all()
     serializer = PostSerializer(posts, many=True)
@@ -48,10 +46,8 @@ def list_view(request):
 
 @api_view(['DELETE'])
 @csrf_exempt
-@permission_classes([permissions.AllowAny, ])
+@permission_classes([ ])
 def delete_view(request, post_id):
-    permission_func(request)
-
     try:
         post = Post.objects.get(id=post_id)
         post.delete()
@@ -65,11 +61,8 @@ def delete_view(request, post_id):
 
 @api_view(["PUT"])
 @csrf_exempt
-@permission_classes([permissions.AllowAny, ])
+@permission_classes([IsAuthenticated])
 def update_view(request, post_id):
-
-    permission_func(request)
-
     payload = json.loads(request.body)
     print(payload)  
     try:
@@ -86,8 +79,3 @@ def update_view(request, post_id):
         return JsonResponse({'error': str(e)}, safe=False, status=status.HTTP_404_NOT_FOUND)
     except Exception:
         return JsonResponse({'error': 'Something terrible went wrong'}, safe=False, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-
-def permission_func(request):
-    if not request.user.username.is_authenticated:
-        return JsonResponse({'error': 'Failed authentication'}, safe=False, status=status.HTTP_401_UNAUTHORIZED)

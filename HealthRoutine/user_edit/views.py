@@ -4,35 +4,31 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
-from rest_framework import permissions
+from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth.models import User
+from django.db.models.query_utils import Q
 from .serializers import UserSerializer
 
 @api_view(["GET"])
 @csrf_exempt
-@permission_classes([permissions.AllowAny, ])
+@permission_classes([IsAuthenticated])
 def profile_view(request):
-    user_profile = request.user.objects.get.all()
+    user_profile = User.objects.filter(username=str(request.user))
     serializer = UserSerializer(user_profile, many=True)
-    return JsonResponse({'posts': serializer.data}, safe=False,
+    return JsonResponse({'user': serializer.data}, safe=False,
                         status=status.HTTP_200_OK)
 
 @api_view(["PUT"])
 @csrf_exempt
-@permission_classes([permissions.AllowAny, ])
-def profile_update(request, user_id):
-
-    permission_func(request)
-
+@permission_classes([IsAuthenticated])
+def profile_update(request):
     payload = json.loads(request.body)
-    print(payload)
     try:
-        user_profile = User.objects.get(id=user_id)
+        user_profile = User.objects.filter(username=str(request.user))
         user_profile.first_name = payload['first_name'],
         user_profile.username = payload['username'],
         user_profile.email = payload['email'],
         user_profile.password = payload['password'],
-        user_profile.is_active = False
         serializer = UserSerializer(user_profile)
         return JsonResponse({'user': serializer.data}, safe=False,
             status=status.HTTP_200_OK)
@@ -42,6 +38,6 @@ def profile_update(request, user_id):
         return JsonResponse({'error': 'Something terrible went wrong'}, safe=False, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-def permission_func(request):
-    if not request.user.username.is_authenticated:
-        return JsonResponse({'error': 'Failed authentication'}, safe=False, status=status.HTTP_401_UNAUTHORIZED)
+##def permission_func(request):
+##    if not request.user.username.is_authenticated:
+##        return JsonResponse({'error': 'Failed authentication'}, safe=False, status=status.HTTP_401_UNAUTHORIZED)

@@ -15,9 +15,9 @@ from django.utils.encoding import force_bytes
 def signIn_view(request):
     payload = json.loads(request.body)
     try:
-        username = payload['userid']
+        userid = payload['userid']
         password = payload['password']
-        user = authenticate(userid=username, password=password)
+        user = authenticate(username=userid, password=password)
         if user is not None:
             login(request, user)
             return JsonResponse({'response_code': 'success'}, safe=False, status=status.HTTP_200_OK)
