@@ -15,7 +15,11 @@ from django.utils.encoding import force_bytes
 def signIn_view(request):
     payload = json.loads(request.body)
     try:
+<<<<<<< HEAD
         userid = payload['userid']
+=======
+        userid = payload['id']
+>>>>>>> 0321428de1bf8e11ac141d2a24a3ddb0758a5f01
         password = payload['password']
         user = authenticate(username=userid, password=password)
         if user is not None:
@@ -51,8 +55,8 @@ def signUp_view(request):
             # email=request.POST.get('email'),
             # password=request.POST.get('password'),
             # is_active=False
-            first_name=payload['name'],
             username=payload['id'],
+            first_name=payload['name'],
             email=payload['email'],
             password=payload['password'],
             is_active=False
