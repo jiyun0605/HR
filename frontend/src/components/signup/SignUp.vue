@@ -49,3 +49,4 @@ export default {
     }
 }
 </script>
+<style src="./signup.css"/>
