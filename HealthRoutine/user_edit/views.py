@@ -10,6 +10,8 @@ from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth.models import User
 from django.db.models.query_utils import Q
 from .serializers import UserSerializer
+from django.contrib.auth import logout
+from django.contrib.auth.hashers import check_password
 
 @api_view(["GET"])
 @csrf_exempt
@@ -40,16 +42,18 @@ def profile_update(request):
         return JsonResponse({'error': 'Something terrible went wrong'}, safe=False,
                             status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-@api_view(["DELETE"])
+@api_view(["GET"])
 @csrf_exempt
 @permission_classes([IsAuthenticated])
 def profile_delete(request):
     payload = json.loads(request.body)
     try:
         password = payload['password']
-        
-        if user is not None:
-            User.is_active=False
+        user = User.objects.get(username=str(request.user))
+        print(user.password)
+        if check_password(password, user.password):
+            User.is_active = False
+            logout(request)
             return JsonResponse({'response_code': 'success'}, safe=False, status=status.HTTP_204_NO_CONTENT)
         else:
             return JsonResponse({'error': 'Wrong input'}, safe=False, status=status.HTTP_404_NOT_FOUND)
