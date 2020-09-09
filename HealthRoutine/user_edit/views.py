@@ -47,7 +47,7 @@ def profile_delete(request):
     payload = json.loads(request.body)
     try:
         password = payload['password']
-        user = authenticate(password=password)
+        
         if user is not None:
             User.is_active=False
             return JsonResponse({'response_code': 'success'}, safe=False, status=status.HTTP_204_NO_CONTENT)
