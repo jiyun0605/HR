@@ -6,6 +6,7 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
+from rest_framework import permissions
 from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth.models import User
 from django.db.models.query_utils import Q
@@ -17,18 +18,18 @@ from django.contrib.auth.hashers import check_password
 @csrf_exempt
 @permission_classes([IsAuthenticated])
 def profile_view(request):
-    user_profile = User.objects.filter(username=str(request.user))
+    user_profile = User.objects.filter(username=request.user)
     serializer = UserSerializer(user_profile, many=True)
     return JsonResponse({'user': serializer.data}, safe=False,
                         status=status.HTTP_200_OK)
 
-@api_view(["PUT"])
 @csrf_exempt
-@permission_classes([IsAuthenticated])
+@api_view(["POST"])
+@permission_classes([permissions.AllowAny, ])
 def profile_update(request):
     payload = json.loads(request.body)
     try:
-        user_profile = User.objects.filter(username=str(request.user))
+        user_profile = User.objects.get(username=request.user)
         user_profile.first_name = payload['first_name'],
         user_profile.username = payload['username'],
         user_profile.email = payload['email'],
@@ -49,7 +50,7 @@ def profile_delete(request):
     payload = json.loads(request.body)
     try:
         password = payload['password']
-        user = User.objects.get(username=str(request.user))
+        user = User.objects.get(username=request.user)
         print(user.password)
         if check_password(password, user.password):
             User.is_active = False

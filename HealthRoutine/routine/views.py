@@ -46,7 +46,7 @@ def list_view(request):
 
 @api_view(['DELETE'])
 @csrf_exempt
-@permission_classes([])
+@permission_classes([IsAuthenticated])
 def delete_view(request, post_id):
     try:
         post = Post.objects.get(id=post_id)
@@ -63,8 +63,7 @@ def delete_view(request, post_id):
 @csrf_exempt
 @permission_classes([IsAuthenticated])
 def update_view(request, post_id):
-    payload = json.loads(request.body)
-    print(payload)  
+    payload = json.loads(request.body) 
     try:
         post = Post.objects.get(id=post_id)
         post.title = payload['title']
