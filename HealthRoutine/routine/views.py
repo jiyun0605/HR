@@ -46,7 +46,7 @@ def list_view(request):
 
 @api_view(['DELETE'])
 @csrf_exempt
-@permission_classes([ ])
+@permission_classes([])
 def delete_view(request, post_id):
     try:
         post = Post.objects.get(id=post_id)
