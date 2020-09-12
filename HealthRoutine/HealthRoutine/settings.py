@@ -39,13 +39,13 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'routine.apps.RoutineConfig',
     'rest_framework',
-    'loginsystem',
-    'user_edit',
+    # 'user_edit',
+    'login_system',
 ]
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.permissions.IsAuthenticated',
+        # 'rest_framework.permissions.IsAuthenticated',
         'rest_framework.authentication.BasicAuthentication',
         'rest_framework.authentication.SessionAuthentication',
     ]
@@ -60,6 +60,22 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+import json
+from django.core.exceptions import ImproperlyConfigured
+
+with open("HealthRoutine/secret.json") as f:
+    secrets = json.loads(f.read())
+
+def get_secret(setting, secrets=secrets):
+    try:
+        return secrets[setting]
+    except KeyError:
+        error_msg = f"Set the {setting} environment variable"
+        raise ImproperlyConfigured(error_msg)
+
+
+SECRET_KEY = get_secret("SECRET_KEY")
 
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
@@ -108,6 +124,11 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.ruu.kr'
+EMAIL_HOST_USER = 'test_hr@ruu.kr'
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 
 # Internationalization
