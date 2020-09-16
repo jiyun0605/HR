@@ -129,3 +129,4 @@ def verify(request, pk, token, mail="0"):
         user.email = mail
         user.save()
     return JsonResponse({'success': user.id}, safe=False, status=status.HTTP_200_OK)
+# git test
