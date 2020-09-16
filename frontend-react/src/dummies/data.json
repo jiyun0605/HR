@@ -1,0 +1,55 @@
+{
+  "data": [
+    {
+      "username": "티라노사우르스",
+      "id": "user",
+      "password": "1234",
+      "email": "hunwoo0505@gmail.com",
+      "create_date": "2020-08-01",
+      "update_date": "2020-08-01",
+      "list_count": "2",
+      "list": [
+        {
+          "title": "제주도식 이두 조지기",
+          "routine": [
+            {
+              "name": "이두컬",
+              "reps": "12",
+              "sets": "5"
+            },
+            {
+              "name": "바벨컬",
+              "reps": "20",
+              "sets": "7"
+            },
+            {
+              "name": "트라이익스셉션",
+              "reps": "4",
+              "sets": "12"
+            }
+          ]
+        },
+        {
+          "title": "강원도식 하체",
+          "routine": [
+            {
+              "name": "스쿼트",
+              "reps": "5",
+              "sets": "5"
+            },
+            {
+              "name": "데드리프트",
+              "reps": "4",
+              "sets": "5"
+            },
+            {
+              "name": "프론트 스쿼트",
+              "reps": "12",
+              "sets": "4"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
