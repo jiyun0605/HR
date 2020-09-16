@@ -6,7 +6,7 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from .models import Account
-from django.http import JsonResponse, HttpResponse
+from django.http import JsonResponse
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_text
 from six import text_type
@@ -40,20 +40,19 @@ def sign_up(request):
         return JsonResponse({'error': str(e)}, safe=False,
                             status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+
 @api_view(["POST"])
 @csrf_exempt
 @permission_classes([AllowAny])
 def sign_in(request):
     payload = json.loads(request.body)
-    id = payload["id"]
-    password = payload["password"]
     try:
-        if Account.objects.filter(id=payload.id).exists():
+        if Account.objects.filter(id=payload["id"]).exists():
             print("test")
-            check_user = Account.objects.get(id=payload.id)
-            if bcrypt.checkpw(payload.password.encode('UTF-8'), check_user.password.encode('UTF-8')):
-                token = jwt.encode({'user': check_user.id}, settings.SECRET_KEY, algorithm='HS256').decode('UTF-8')
-                return JsonResponse({'token': token}, safe=False,
+            check_user = Account.objects.get(id=payload["id"])
+            if bcrypt.checkpw(payload["password"].encode('UTF-8'), check_user.password.encode('UTF-8')):
+                token = jwt.encode({"user": check_user.id}, settings.SECRET_KEY, algorithm='HS256').decode('UTF-8')
+                return JsonResponse({"token": token}, safe=False,
                                     status=status.HTTP_200_OK)
             return JsonResponse({'error': 'wrong input'}, safe=False,
                                 status=status.HTTP_401_UNAUTHORIZED)
@@ -70,14 +69,37 @@ def sign_in(request):
                             status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
+class LoginConfirm:
+    def __init__(self, original_function):
+        self.original_function = original_function
+
+    def __call__(self, request, *args, **kwargs):
+        token = request.headers.get("Authorization", None)
+        try:
+            if token:
+                token_payload = jwt.decode(token, settings.SECRET_KEY, algorithms="HS256")
+                user = Account.objects.get(name=token_payload['name'])
+                request.user = user
+                return self.original_function(self, request, *args, **kwargs)
+            return JsonResponse({'error': 'NEED_LOGIN'}, status=401)
+        except jwt.ExpiredSignatureError:
+            return JsonResponse({'error': 'EXPIRED_TOKEN'}, status=401)
+        except jwt.DecodeError:
+            return JsonResponse({'error': 'INVALID_USER'}, status=401)
+        except Account.DoesNotExist:
+            return JsonResponse({'error': 'INVALID_USER'}, status=401)
+
+
+@api_view(["GET"])
+@csrf_exempt
+@permission_classes([])
 def send_mail(request, pk):
     current_site = get_current_site(request)
     pk = force_text(urlsafe_base64_decode(pk))
     user = Account.objects.get(pk=pk)
     token = AccountActivationTokenGenerator()
     token = token.make_token(user)
-    content = 'HR 인증 주소.\n\n{}/user/{}/verify/{}/'.format(current_site.domain,
-                                                               urlsafe_base64_encode(force_bytes(user.pk)), token)
+    content = 'HR 인증 주소.\n\n{}/user/{}/verify/{}/'.format(current_site.domain, urlsafe_base64_encode(force_bytes(user.pk)), token)
     email = EmailMessage('HR 인증', content, to=[user.email])
     EmailMessage()
     email.send()
