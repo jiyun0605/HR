@@ -3,9 +3,9 @@ from django.core.mail import EmailMessage
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny,IsAuthenticated
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
-from .models import Account
+from .models import User
 from django.http import JsonResponse
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_text
@@ -16,6 +16,30 @@ import json
 import bcrypt
 import jwt
 from django.conf import settings
+from django.contrib.auth import login,logout,authenticate
+
+@api_view(["GET"])
+@csrf_exempt
+@permission_classes([IsAuthenticated])
+def sign_out(request):
+    try:
+        logout(request)
+        return JsonResponse({'success': 'success_code'}, safe=False, status=status.HTTP_201_CREATED)
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, safe=False,
+                            status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+def send_mail(request, pk):
+    current_site = get_current_site(request)
+    pk = force_text(urlsafe_base64_decode(pk))
+    user = User.objects.get(id=pk)
+    token = AccountActivationTokenGenerator()
+    token = token.make_token(user)
+    content = 'HR 인증 주소.\n\n{}/user/{}/verify/{}/'.format(current_site.domain, urlsafe_base64_encode(force_bytes(user.pk)), token)
+    email = EmailMessage('HR 인증', content, to=[user.email])
+    EmailMessage()
+    email.send()
+    return JsonResponse({'success': '성공!'})
 
 
 @api_view(["POST"])
@@ -24,15 +48,15 @@ from django.conf import settings
 def sign_up(request):
     payload = json.loads(request.body)
     try:
-        user = Account.objects.create(
-            id=payload["id"],
+        user = User.objects.create(
+            username=payload["username"],
             name=payload["name"],
             email=payload["email"],
             password=bcrypt.hashpw(payload["password"].encode("UTF-8"),
                                    bcrypt.gensalt()).decode("UTF-8")
         )
         pk = urlsafe_base64_encode(force_bytes(user.id))
-        send_mail(request, pk)
+        send_mail(request._request, pk)
         return JsonResponse({'success': user.id}, safe=False, status=status.HTTP_201_CREATED)
     except ObjectDoesNotExist as e:
         return JsonResponse({'error': str(e)}, safe=False, status=status.HTTP_404_NOT_FOUND)
@@ -47,17 +71,13 @@ def sign_up(request):
 def sign_in(request):
     payload = json.loads(request.body)
     try:
-        if Account.objects.filter(id=payload["id"]).exists():
-            print("test")
-            check_user = Account.objects.get(id=payload["id"])
-            if bcrypt.checkpw(payload["password"].encode('UTF-8'), check_user.password.encode('UTF-8')):
-                token = jwt.encode({"user": check_user.id}, settings.SECRET_KEY, algorithm='HS256').decode('UTF-8')
-                return JsonResponse({"token": token}, safe=False,
-                                    status=status.HTTP_200_OK)
-            return JsonResponse({'error': 'wrong input'}, safe=False,
-                                status=status.HTTP_401_UNAUTHORIZED)
+        user=User.objects.get(username = payload["username"])
+        if user is not None:
+            login(request,user)
+            return JsonResponse( {'success':user.id}, safe=False,
+                                status=status.HTTP_200_OK)
         return JsonResponse({'error': 'wrong input'}, safe=False,
-                            status=status.HTTP_400_BAD_REQUEST)
+                            status=status.HTTP_401_UNAUTHORIZED)
     except ObjectDoesNotExist as e:
         return JsonResponse({'error': str(e)}, safe=False,
                             status=status.HTTP_500_INTERNAL_SERVER_ERROR)
@@ -69,42 +89,6 @@ def sign_in(request):
                             status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-class LoginConfirm:
-    def __init__(self, original_function):
-        self.original_function = original_function
-
-    def __call__(self, request, *args, **kwargs):
-        token = request.headers.get("Authorization", None)
-        try:
-            if token:
-                token_payload = jwt.decode(token, settings.SECRET_KEY, algorithms="HS256")
-                user = Account.objects.get(name=token_payload['name'])
-                request.user = user
-                return self.original_function(self, request, *args, **kwargs)
-            return JsonResponse({'error': 'NEED_LOGIN'}, status=401)
-        except jwt.ExpiredSignatureError:
-            return JsonResponse({'error': 'EXPIRED_TOKEN'}, status=401)
-        except jwt.DecodeError:
-            return JsonResponse({'error': 'INVALID_USER'}, status=401)
-        except Account.DoesNotExist:
-            return JsonResponse({'error': 'INVALID_USER'}, status=401)
-
-
-@api_view(["GET"])
-@csrf_exempt
-@permission_classes([])
-def send_mail(request, pk):
-    current_site = get_current_site(request)
-    pk = force_text(urlsafe_base64_decode(pk))
-    user = Account.objects.get(pk=pk)
-    token = AccountActivationTokenGenerator()
-    token = token.make_token(user)
-    content = 'HR 인증 주소.\n\n{}/user/{}/verify/{}/'.format(current_site.domain, urlsafe_base64_encode(force_bytes(user.pk)), token)
-    email = EmailMessage('HR 인증', content, to=[user.email])
-    EmailMessage()
-    email.send()
-    return JsonResponse({'success': '성공!'})
-
 
 class AccountActivationTokenGenerator(PasswordResetTokenGenerator):
     def _make_hash_value(self, user, timestamp):
@@ -114,19 +98,26 @@ class AccountActivationTokenGenerator(PasswordResetTokenGenerator):
 @api_view(["GET"])
 @csrf_exempt
 @permission_classes([AllowAny])
-def verify(request, pk, token, mail="0"):
+def verify(request, pk, token, mail=None):
     uid = force_text(urlsafe_base64_decode(pk))
-    user = Account.objects.get(pk=uid)
-    is_valid = AccountActivationTokenGenerator().check_token(user, token)
-    if is_valid:
-        user.is_valid = True
-        user.save()
-        messages.info(request, '인증이 완료되었습니다.')
-    else:
-        messages.error(request, '인증에 실패했습니다.')
-    if mail != "0":
-        mail = force_text(urlsafe_base64_decode(mail))
-        user.email = mail
-        user.save()
-    return JsonResponse({'success': user.id}, safe=False, status=status.HTTP_200_OK)
+    try:
+        user = User.objects.get(id=uid)
+        is_valid = AccountActivationTokenGenerator().check_token(user, token)
+        if is_valid and not user.is_valid:
+            user.is_valid = True
+            user.save()
+        else:
+            return JsonResponse({'error': 'wrong access'}, safe=False,
+                                status=status.HTTP_400_BAD_REQUEST)
+        if mail is not None:
+            mail = force_text(urlsafe_base64_decode(mail))
+            user.email = mail
+            user.save()
+        return JsonResponse({'success': user.id}, safe=False, status=status.HTTP_200_OK)
+    except ObjectDoesNotExist as e:
+        return JsonResponse({'error': str(e)}, safe=False,
+                            status=status.HTTP_400_BAD_REQUEST)
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, safe=False,
+                            status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 # git test
