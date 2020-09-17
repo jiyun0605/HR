@@ -1,2 +1,0 @@
-# HR
-django-project
