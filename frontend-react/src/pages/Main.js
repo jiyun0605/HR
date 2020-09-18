@@ -15,6 +15,7 @@ const ListWrapper = styled.div`
 
 export const Main = () => {
   const list = respone.data;
+  console.log(list);
   return (
     <div>
       <ListWrapper>
